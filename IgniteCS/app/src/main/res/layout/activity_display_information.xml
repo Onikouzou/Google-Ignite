@@ -4,6 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#006633"
     tools:context="com.example.matt.ignitecs.DisplayInformation">
 
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="516dp"
+        android:layout_height="398dp"
+        tools:layout_editor_absoluteX="45dp"
+        tools:layout_editor_absoluteY="44dp" />
 </android.support.constraint.ConstraintLayout>
