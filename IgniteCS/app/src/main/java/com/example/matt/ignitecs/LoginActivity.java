@@ -1,25 +1,17 @@
 package com.example.matt.ignitecs;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 
-import static com.example.matt.ignitecs.R.id.btnBegin;
-import static com.example.matt.ignitecs.R.id.text_input_password_toggle;
+//import static com.example.matt.ignitecs.R.id.btnBegin;
+//import static com.example.matt.ignitecs.R.id.text_input_password_toggle;
 
 public class LoginActivity extends AppCompatActivity
 {
