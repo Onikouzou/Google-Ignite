@@ -37,19 +37,7 @@ public class DisplayInformation extends AppCompatActivity
 
         txtLocCoarse = (TextView) findViewById(R.id.txtLocCoarse);
 
-        try {
-            LocationRequest mCoarseLocationRequest = new LocationRequest();
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, mCoarseLocationRequest, this);
-
-            Location mCurrentLocation;
-            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            txtLocCoarse.setText(mCurrentLocation.getLatitude() + ", " + mCurrentLocation.getLongitude());
-        } catch (SecurityException e) {
-
-        }
-
-    }
+    } // end onCreate
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
@@ -62,7 +50,17 @@ public class DisplayInformation extends AppCompatActivity
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        //your code goes here
+        try {
+            LocationRequest mCoarseLocationRequest = new LocationRequest();
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mCoarseLocationRequest, this);
+
+            Location mCurrentLocation;
+            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            txtLocCoarse.setText(mCurrentLocation.getLatitude() + ", " + mCurrentLocation.getLongitude());
+        } catch (SecurityException e) {
+
+        }
     }
 
     @Override
@@ -85,4 +83,4 @@ public class DisplayInformation extends AppCompatActivity
         mGoogleApiClient.disconnect();
         super.onStop();
     }
-}
+} // end class

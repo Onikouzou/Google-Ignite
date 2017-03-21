@@ -10,8 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-//import static com.example.matt.ignitecs.R.id.btnBegin;
-//import static com.example.matt.ignitecs.R.id.text_input_password_toggle;
+import static com.example.matt.ignitecs.R.id.btnBegin;
+import static com.example.matt.ignitecs.R.id.text_input_password_toggle;
 
 public class LoginActivity extends AppCompatActivity
 {
@@ -20,8 +20,6 @@ public class LoginActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-
 
         Button btnBegin = (Button) findViewById(R.id.btnBegin);
 
