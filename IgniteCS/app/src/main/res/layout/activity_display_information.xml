@@ -10,8 +10,8 @@
     <TableLayout
         android:layout_width="0dp"
         android:layout_height="871dp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp">
+        tools:layout_editor_absoluteX="4dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <TableRow
             android:layout_width="match_parent"
@@ -53,5 +53,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </TableLayout>
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView3"
+        android:layout_width="398dp"
+        android:layout_height="305dp"
+        tools:layout_editor_absoluteX="101dp"
+        tools:layout_editor_absoluteY="39dp" />
 
 </android.support.constraint.ConstraintLayout>
