@@ -22,17 +22,16 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 
-<<<<<<< HEAD
+
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
-=======
+
 import java.io.File;
 import java.io.IOException;
->>>>>>> origin/master
 
 public class DisplayInformation extends AppCompatActivity
         implements OnConnectionFailedListener,
@@ -66,13 +65,12 @@ public class DisplayInformation extends AppCompatActivity
 
         txtLocCoarse = (TextView) findViewById(R.id.txtLocCoarse);
 
-<<<<<<< HEAD
         // Get the SupportMapFragment and request notification
         // when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
             .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-=======
+
         /*
         the following has to do with the camera
          */
@@ -111,7 +109,7 @@ public class DisplayInformation extends AppCompatActivity
                 startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
             }
         });
->>>>>>> origin/master
+
 
         // Create camera
 //        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -194,6 +192,8 @@ public class DisplayInformation extends AppCompatActivity
 //        }
 //        super.onActivityResult(requestCode, resultCode, data);
 
+    }
+
     /**
      * Manipulates the map when it's available.
      * The API invokes this callback when the map is ready to be used.
@@ -211,9 +211,6 @@ public class DisplayInformation extends AppCompatActivity
         googleMap.addMarker(new MarkerOptions().position(sydney)
                 .title("Marker in Sydney"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    }
-
-
     }
 
 } // end class
