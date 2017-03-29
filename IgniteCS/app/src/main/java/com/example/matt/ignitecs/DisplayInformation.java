@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class DisplayInformation extends AppCompatActivity
@@ -43,6 +44,7 @@ public class DisplayInformation extends AppCompatActivity
     TextView txtLocCoarse;
     Button btnTakePicture;
     ImageView displayPicture;
+    Location mCurrentLocation;
 
     int CAMERA_PIC_REQUEST = 1337;
     public static int count = 0;
@@ -137,7 +139,6 @@ public class DisplayInformation extends AppCompatActivity
             LocationServices.FusedLocationApi.requestLocationUpdates(
                     mGoogleApiClient, mCoarseLocationRequest, this);
 
-            Location mCurrentLocation;
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             txtLocCoarse.setText(mCurrentLocation.getLatitude() + ", " + mCurrentLocation.getLongitude());
         } catch (SecurityException e) {
@@ -169,6 +170,30 @@ public class DisplayInformation extends AppCompatActivity
         super.onStop();
     }
 
+    /**
+     * Manipulates the map when it's available.
+     * The API invokes this callback when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user receives a prompt to install
+     * Play services inside the SupportMapFragment. The API invokes this method after the user has
+     * installed Google Play services and returned to the app.
+     */
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        // Add a marker in Sydney, Australia,
+        // and move the map's camera to the same location.
+
+        LatLng gb = new LatLng(44.531854, -87.916980);
+
+        googleMap.addMarker(new MarkerOptions().position(gb)
+                .title("You are here"));
+        // googleMap.moveCamera(CameraUpdateFactory.newLatLng(gb));
+        float zoomLevel = 16;
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gb, zoomLevel));
+    }
+
     /*
      * The following methods are for the controlling the camera
      */
@@ -194,23 +219,7 @@ public class DisplayInformation extends AppCompatActivity
 
     }
 
-    /**
-     * Manipulates the map when it's available.
-     * The API invokes this callback when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user receives a prompt to install
-     * Play services inside the SupportMapFragment. The API invokes this method after the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
-        LatLng sydney = new LatLng(-33.852, 151.211);
-        googleMap.addMarker(new MarkerOptions().position(sydney)
-                .title("Marker in Sydney"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    }
+
+
 
 } // end class
