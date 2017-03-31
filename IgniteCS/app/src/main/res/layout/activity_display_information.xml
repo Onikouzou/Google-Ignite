@@ -90,7 +90,7 @@
         android:id="@+id/contactsList"
         android:layout_width="313dp"
         android:layout_height="141dp"
-        android:layout_marginLeft="0dp"
+        android:layout_marginLeft="11dp"
         android:layout_marginTop="34dp"
         android:visibility="visible"
         app:layout_constraintLeft_toRightOf="@+id/lblContactInfo"

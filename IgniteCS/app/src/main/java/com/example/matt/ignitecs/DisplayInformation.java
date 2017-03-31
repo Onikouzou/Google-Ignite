@@ -72,7 +72,6 @@ public class DisplayInformation extends AppCompatActivity
     Location mCurrentLocation;
     ListView contactsList;
     Cursor cursor;
-
     ArrayList<String> StoreContacts;
     ArrayAdapter<String> arrayAdapter;
 
@@ -80,19 +79,16 @@ public class DisplayInformation extends AppCompatActivity
     private static final String LOG_TAG = "AudioRecordTest";
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private static String mFileName = null;
-
     private MediaRecorder mRecorder = null;
-
-    private PlayButton   mPlayButton = null;
+    private PlayButton mPlayButton = null;
     private MediaPlayer mPlayer = null;
 
     // Requesting permission to RECORD_AUDIO
-    private boolean permissionToRecordAccepted = false;
-    private String [] permissions = {Manifest.permission.RECORD_AUDIO};
-
+    private boolean permissionAccepted = false;
+    private String [] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_CONTACTS};
 
     int CAMERA_PIC_REQUEST = 1337;
-    public  static final int RequestPermissionCode  = 1 ;
+    public static final int REQUEST_CONTACTS_PERMISSION = 1 ;
     public static int count = 0;
     String name, phonenumber;
 
@@ -144,9 +140,8 @@ public class DisplayInformation extends AppCompatActivity
             // ERROR
         }
 
-
-        /*
-        the following has to do with the camera
+        /**
+            The following has to do with the camera
          */
 
         // create directory named igniteCSPics to store pics taken by camera using this application
@@ -184,7 +179,6 @@ public class DisplayInformation extends AppCompatActivity
             }
         });
 
-
         // Create camera
 //        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 //        startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
@@ -200,24 +194,24 @@ public class DisplayInformation extends AppCompatActivity
         StoreContacts = new ArrayList<String>();
 
         // toasts the user that their contacts are now being accessed
-        EnableRuntimePermission();
+//        EnableRuntimePermission();
 
         btnContacts.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-//                GetContactsIntoArrayList();
-//
-//                arrayAdapter = new ArrayAdapter<String>(
-//                        DisplayInformation.this,
-//                        R.layout.activity_display_information, // possibly change if it doesn't work
-//                        R.id.contactsList, StoreContacts
-//                );
-//
-//                contactsList.setAdapter(arrayAdapter);
-//                contactsList.setTextFilterEnabled(true);
+                GetContactsIntoArrayList();
 
+                arrayAdapter = new ArrayAdapter<String>(
+                        DisplayInformation.this,
+                        R.layout.activity_display_information, // possibly change if it doesn't work
+                        R.id.contactsList, StoreContacts
+                );
+
+                contactsList.setAdapter(arrayAdapter);
+                contactsList.setTextFilterEnabled(true);
+                
             }
         });
 
@@ -321,31 +315,44 @@ public class DisplayInformation extends AppCompatActivity
     /**
      * THe following methods are for the contacts
      */
-    public void GetContactsIntoArrayList(){
+    public void GetContactsIntoArrayList() {
 
-        cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null, null, null);
+        cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
         while (cursor.moveToNext()) {
 
-<<<<<<< HEAD
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-=======
+        }
+    }
     // -----------------------
     // Audio recording
     // -----------------------
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode){
             case REQUEST_RECORD_AUDIO_PERMISSION:
-                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                permissionAccepted = (grantResults[0] == PackageManager.PERMISSION_GRANTED);
+                break;
+            case REQUEST_CONTACTS_PERMISSION:
+                permissionAccepted = (grantResults[1] == PackageManager.PERMISSION_GRANTED);
+                Toast.makeText(DisplayInformation.this,"Permission Granted, Now your application can access CONTACTS.", Toast.LENGTH_LONG).show();
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                    Toast.makeText(DisplayInformation.this,"Permission Granted, Now your application can access CONTACTS.", Toast.LENGTH_LONG).show();
+//
+//                } else {
+//
+//                    Toast.makeText(DisplayInformation.this,"Permission Canceled, Now your application cannot access CONTACTS.", Toast.LENGTH_LONG).show();
+//
+//                }
                 break;
         }
-        if (!permissionToRecordAccepted ) finish();
-
+        if (!permissionAccepted ) finish();
     }
 
-    private void onRecord(boolean start) {
+    private void onRecord(boolean start){
         if (start) {
             startRecording();
         } else {
@@ -399,10 +406,12 @@ public class DisplayInformation extends AppCompatActivity
         mRecorder = null;
     }
 
-    class PlayButton extends Button {
+    class PlayButton extends Button
+    {
         boolean mStartPlaying = true;
 
-        OnClickListener clicker = new OnClickListener() {
+        OnClickListener clicker = new OnClickListener()
+        {
             public void onClick(View v) {
                 onPlay(mStartPlaying);
                 if (mStartPlaying) {
@@ -420,52 +429,24 @@ public class DisplayInformation extends AppCompatActivity
             setOnClickListener(clicker);
         }
     }
->>>>>>> origin/master
 
-            phonenumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-            StoreContacts.add(name + " "  + ":" + " " + phonenumber);
-        }
-
-        cursor.close();
-
-    }
-
-    public void EnableRuntimePermission(){
+    public void EnableRuntimePermission() {
 
         if (ActivityCompat.shouldShowRequestPermissionRationale(
                 DisplayInformation.this,
-                Manifest.permission.READ_CONTACTS))
-        {
+                Manifest.permission.READ_CONTACTS)) {
 
-            Toast.makeText(DisplayInformation.this,"CONTACTS permission allows us to Access CONTACTS app", Toast.LENGTH_LONG).show();
+            Toast.makeText(DisplayInformation.this, "CONTACTS permission allows us to Access CONTACTS app", Toast.LENGTH_LONG).show();
 
         } else {
 
-            ActivityCompat.requestPermissions(DisplayInformation.this,new String[]{
-                    Manifest.permission.READ_CONTACTS}, RequestPermissionCode);
+            ActivityCompat.requestPermissions(DisplayInformation.this, new String[]{
+                    Manifest.permission.READ_CONTACTS}, REQUEST_CONTACTS_PERMISSION);
 
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int RC, String per[], int[] PResult) {
 
-        switch (RC) {
-
-            case RequestPermissionCode:
-
-                if (PResult.length > 0 && PResult[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Toast.makeText(DisplayInformation.this,"Permission Granted, Now your application can access CONTACTS.", Toast.LENGTH_LONG).show();
-
-                } else {
-
-                    Toast.makeText(DisplayInformation.this,"Permission Canceled, Now your application cannot access CONTACTS.", Toast.LENGTH_LONG).show();
-
-                }
-                break;
-        }
-    }
 
 } // end class
