@@ -1,18 +1,26 @@
 package com.example.matt.ignitecs;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.provider.ContactsContract;
 import android.widget.Toast;
 
 import com.google.android.gms.location.LocationListener;
@@ -33,6 +41,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import static android.R.attr.name;
 
 public class DisplayInformation extends AppCompatActivity
         implements OnConnectionFailedListener,
@@ -43,11 +54,19 @@ public class DisplayInformation extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     TextView txtLocCoarse;
     Button btnTakePicture;
+    Button btnContacts;
     ImageView displayPicture;
     Location mCurrentLocation;
+    ListView contactsList;
+    Cursor cursor;
+
+    ArrayList<String> StoreContacts;
+    ArrayAdapter<String> arrayAdapter;
 
     int CAMERA_PIC_REQUEST = 1337;
+    public  static final int RequestPermissionCode  = 1 ;
     public static int count = 0;
+    String name, phonenumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -120,6 +139,34 @@ public class DisplayInformation extends AppCompatActivity
         // enable to automatically click button when displayinformation is called
        // btnTakePicture.callOnClick();
 
+        /**
+         * Grab Contacts
+         */
+        contactsList = (ListView) findViewById(R.id.contactsList);
+        btnContacts = (Button) findViewById((R.id.btnContacts));
+        StoreContacts = new ArrayList<String>();
+
+        // toasts the user that their contacts are now being accessed
+        EnableRuntimePermission();
+
+        btnContacts.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+//                GetContactsIntoArrayList();
+//
+//                arrayAdapter = new ArrayAdapter<String>(
+//                        DisplayInformation.this,
+//                        R.layout.activity_display_information, // possibly change if it doesn't work
+//                        R.id.contactsList, StoreContacts
+//                );
+//
+//                contactsList.setAdapter(arrayAdapter);
+//                contactsList.setTextFilterEnabled(true);
+
+            }
+        });
 
     } // end onCreate
 
@@ -146,7 +193,7 @@ public class DisplayInformation extends AppCompatActivity
         }
     }
 
-    /*
+    /**
      * The following are for google api
      */
     @Override
@@ -194,7 +241,7 @@ public class DisplayInformation extends AppCompatActivity
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gb, zoomLevel));
     }
 
-    /*
+    /**
      * The following methods are for the controlling the camera
      */
     @Override
@@ -206,20 +253,64 @@ public class DisplayInformation extends AppCompatActivity
         {
             Log.d("DisplayInformation", "Pic Saved");
         }
-//        if (requestCode == CAMERA_PIC_REQUEST)
-//        {
-//            // data.getExtras()
-//            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-//        }
-//        else
-//        {
-//            Toast.makeText(DisplayInformation.this, "Pictures Not Taken", Toast.LENGTH_LONG);
-//        }
-//        super.onActivityResult(requestCode, resultCode, data);
 
     }
 
+    /**
+     * THe following methods are for the contacts
+     */
+    public void GetContactsIntoArrayList(){
 
+        cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null, null, null);
 
+        while (cursor.moveToNext()) {
+
+            name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+
+            phonenumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+            StoreContacts.add(name + " "  + ":" + " " + phonenumber);
+        }
+
+        cursor.close();
+
+    }
+
+    public void EnableRuntimePermission(){
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                DisplayInformation.this,
+                Manifest.permission.READ_CONTACTS))
+        {
+
+            Toast.makeText(DisplayInformation.this,"CONTACTS permission allows us to Access CONTACTS app", Toast.LENGTH_LONG).show();
+
+        } else {
+
+            ActivityCompat.requestPermissions(DisplayInformation.this,new String[]{
+                    Manifest.permission.READ_CONTACTS}, RequestPermissionCode);
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int RC, String per[], int[] PResult) {
+
+        switch (RC) {
+
+            case RequestPermissionCode:
+
+                if (PResult.length > 0 && PResult[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Toast.makeText(DisplayInformation.this,"Permission Granted, Now your application can access CONTACTS.", Toast.LENGTH_LONG).show();
+
+                } else {
+
+                    Toast.makeText(DisplayInformation.this,"Permission Canceled, Now your application cannot access CONTACTS.", Toast.LENGTH_LONG).show();
+
+                }
+                break;
+        }
+    }
 
 } // end class
