@@ -10,11 +10,13 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.provider.ContactsContract;
 import android.widget.Toast;
+import android.app.*;
 
 // Maps (coarse location)
 import com.google.android.gms.location.LocationListener;
@@ -56,24 +59,25 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static android.R.attr.fragment;
 import static android.R.attr.name;
 
 public class DisplayInformation extends AppCompatActivity
         implements OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks, LocationListener,
-        OnMapReadyCallback
+        OnMapReadyCallback, FragmentContacts.OnFragmentInteractionListener
 {
 
     private GoogleApiClient mGoogleApiClient;
     TextView txtLocCoarse;
     Button btnTakePicture;
-    Button btnContacts;
+  //  Button btnContacts;
     ImageView displayPicture;
     Location mCurrentLocation;
-    ListView contactsList;
-    Cursor cursor;
+
     ArrayList<String> StoreContacts;
     ArrayAdapter<String> arrayAdapter;
+    CursorAdapter cursorAdapter;
 
     // Audio vars
     private static final String LOG_TAG = "AudioRecordTest";
@@ -97,6 +101,10 @@ public class DisplayInformation extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_information);
+
+        /**
+         * The following code is for the Google Maps API
+         */
 
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null)
@@ -179,41 +187,8 @@ public class DisplayInformation extends AppCompatActivity
             }
         });
 
-        // Create camera
-//        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
-
         // enable to automatically click button when displayinformation is called
        // btnTakePicture.callOnClick();
-
-        /**
-         * Grab Contacts
-         */
-        contactsList = (ListView) findViewById(R.id.contactsList);
-        btnContacts = (Button) findViewById((R.id.btnContacts));
-        StoreContacts = new ArrayList<String>();
-
-        // toasts the user that their contacts are now being accessed
-//        EnableRuntimePermission();
-
-        btnContacts.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                GetContactsIntoArrayList();
-
-                arrayAdapter = new ArrayAdapter<String>(
-                        DisplayInformation.this,
-                        R.layout.activity_display_information, // possibly change if it doesn't work
-                        R.id.contactsList, StoreContacts
-                );
-
-                contactsList.setAdapter(arrayAdapter);
-                contactsList.setTextFilterEnabled(true);
-                
-            }
-        });
 
     } // end onCreate
 
@@ -312,18 +287,6 @@ public class DisplayInformation extends AppCompatActivity
 
     }
 
-    /**
-     * THe following methods are for the contacts
-     */
-    public void GetContactsIntoArrayList() {
-
-        cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-
-        while (cursor.moveToNext()) {
-
-            name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-        }
-    }
     // -----------------------
     // Audio recording
     // -----------------------
@@ -447,6 +410,10 @@ public class DisplayInformation extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri)
+    {
 
+    }
 
 } // end class

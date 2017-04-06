@@ -55,23 +55,13 @@
 
     </TableLayout>
 
-    <Button
-        android:id="@+id/btnTakePicture"
-        android:layout_width="88dp"
-        android:layout_height="48dp"
-        android:layout_marginRight="16dp"
-        android:text="Test Camera"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteY="0dp"
-        android:layout_marginEnd="16dp" />
-
     <TextView
         android:id="@+id/lblContactInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="34dp"
+        android:layout_marginTop="26dp"
         android:text="Contact Information:"
         android:textAlignment="center"
         android:textSize="24sp"
@@ -79,21 +69,35 @@
         app:layout_constraintTop_toBottomOf="@+id/map" />
 
     <Button
-        android:id="@+id/btnContacts"
+        android:id="@+id/btnStartRecording"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test Contacts"
-        app:layout_constraintRight_toLeftOf="@+id/btnTakePicture"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="124dp"
+        android:text="Start Recording"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblContactInfo"
+        android:layout_marginStart="16dp" />
 
-    <ListView
-        android:id="@+id/contactsList"
-        android:layout_width="313dp"
-        android:layout_height="141dp"
-        android:layout_marginLeft="11dp"
-        android:layout_marginTop="34dp"
-        android:visibility="visible"
+    <TextView
+        android:id="@android:id/text1"
+        android:layout_width="0dp"
+        android:layout_height="871dp"
+        android:clickable="true"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp" />
+
+    <fragment
+        android:id="@+id/fragmentContacts"
+        android:name="com.example.matt.ignitecs.FragmentContacts"
+        android:layout_width="338dp"
+        android:layout_height="149dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="26dp"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toRightOf="@+id/lblContactInfo"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map" />
 
 
