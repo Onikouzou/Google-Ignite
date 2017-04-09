@@ -53,7 +53,6 @@ import android.content.Context;
 import android.support.v4.app.ActivityCompat;
 import android.os.CountDownTimer;
 
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -65,7 +64,8 @@ import static android.R.attr.name;
 public class DisplayInformation extends AppCompatActivity
         implements OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks, LocationListener,
-        OnMapReadyCallback, FragmentContacts.OnFragmentInteractionListener
+        OnMapReadyCallback, FragmentContacts.OnFragmentInteractionListener,
+        FragmentCamera.OnFragmentInteractionListener
 {
 
     private GoogleApiClient mGoogleApiClient;
@@ -158,34 +158,34 @@ public class DisplayInformation extends AppCompatActivity
         File newdir = new File(dir);
         newdir.mkdirs();
 
-        // create button
-        btnTakePicture = (Button) findViewById(R.id.btnTakePicture);
-        btnTakePicture.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                // counter will be incremented each time to save the pics taken by the camera as
-                // 1.jpg, 2.jpg, etc.
-                count++;
-                String file = dir + count + ".jpg";
-                File newFile = new File(file);
-
-                // create new file in directory igniteCSPics
-                try{
-                    newFile.createNewFile();
-                }
-                catch(IOException e)
-                {
-                }
-
-                Uri outputFileUri = Uri.fromFile(newFile);
-
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-
-                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
-            }
-        });
+//        // create button
+//        btnTakePicture = (Button) findViewById(R.id.btnTakePicture);
+//        btnTakePicture.setOnClickListener(new View.OnClickListener()
+//        {
+//            public void onClick(View v)
+//            {
+//                // counter will be incremented each time to save the pics taken by the camera as
+//                // 1.jpg, 2.jpg, etc.
+//                count++;
+//                String file = dir + count + ".jpg";
+//                File newFile = new File(file);
+//
+//                // create new file in directory igniteCSPics
+//                try{
+//                    newFile.createNewFile();
+//                }
+//                catch(IOException e)
+//                {
+//                }
+//
+//                Uri outputFileUri = Uri.fromFile(newFile);
+//
+//                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+//
+//                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+//            }
+//        });
 
         // enable to automatically click button when displayinformation is called
        // btnTakePicture.callOnClick();

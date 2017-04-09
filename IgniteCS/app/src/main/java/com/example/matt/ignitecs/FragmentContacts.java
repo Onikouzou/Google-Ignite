@@ -40,7 +40,6 @@ public class FragmentContacts extends Fragment
     ListView contactsList;
     Cursor cursor;
     String name;
-    int number;
 
     private OnFragmentInteractionListener mListener;
 
@@ -74,7 +73,6 @@ public class FragmentContacts extends Fragment
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
