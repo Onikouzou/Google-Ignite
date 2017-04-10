@@ -107,8 +107,7 @@ public class DisplayInformation extends AppCompatActivity
          */
 
         // Create an instance of GoogleAPIClient.
-        if (mGoogleApiClient == null)
-        {
+        if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
@@ -123,6 +122,7 @@ public class DisplayInformation extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
             .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
 
 
         // Audio Recording
@@ -192,6 +192,11 @@ public class DisplayInformation extends AppCompatActivity
 
     } // end onCreate
 
+
+    // -----------------------
+    // Google Maps
+    // -----------------------
+
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         // An unresolvable error has occurred and a connection to Google APIs
@@ -210,14 +215,25 @@ public class DisplayInformation extends AppCompatActivity
 
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             txtLocCoarse.setText(mCurrentLocation.getLatitude() + ", " + mCurrentLocation.getLongitude());
+
+            startLocationUpdates();
+
         } catch (SecurityException e) {
             // ERROR
         }
     }
 
-    /**
-     * The following are for google api
-     */
+    protected void startLocationUpdates() {
+        try {
+            LocationRequest mLocationRequest = new LocationRequest();
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+        } catch (SecurityException e) {
+
+        }
+
+    }
+
     @Override
     public void onConnectionSuspended(int cause) {
         //your code goes here
@@ -225,7 +241,15 @@ public class DisplayInformation extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location loc) {
+        mCurrentLocation = loc;
+//        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        updateUI();
+    }
 
+    private void updateUI() {
+        txtLocCoarse.setText(String.valueOf(mCurrentLocation.getLatitude())
+                                + ", " + String.valueOf(mCurrentLocation.getLongitude()));
+//        mLastUpdateTimeTextView.setText(mLastUpdateTime);
     }
 
     protected void onStart() {
@@ -260,14 +284,12 @@ public class DisplayInformation extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
 
-        LatLng gb = new LatLng(44.531854, -87.916980);
+        LatLng gb = new LatLng(44, -87);
 
         googleMap.addMarker(new MarkerOptions().position(gb)
                 .title("You are here"));
-        // googleMap.moveCamera(CameraUpdateFactory.newLatLng(gb));
+
         float zoomLevel = 16;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gb, zoomLevel));
     }
