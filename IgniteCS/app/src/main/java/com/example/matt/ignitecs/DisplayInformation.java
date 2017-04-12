@@ -3,28 +3,14 @@ package com.example.matt.ignitecs;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.location.Location;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.widget.CursorAdapter;
+import android.net.Uri;;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.provider.ContactsContract;
 import android.widget.Toast;
-import android.app.*;
 
 // Maps (coarse location)
 import com.google.android.gms.location.LocationListener;
@@ -42,24 +28,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
 
-// Audio
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
-import android.widget.Button;
-import android.Manifest;
-import android.support.annotation.NonNull;
-import android.content.pm.PackageManager;
-import android.content.Context;
-import android.support.v4.app.ActivityCompat;
-import android.os.CountDownTimer;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-
-import static android.R.attr.fragment;
-import static android.R.attr.name;
 
 public class DisplayInformation extends AppCompatActivity
         implements OnConnectionFailedListener,
@@ -70,22 +38,10 @@ public class DisplayInformation extends AppCompatActivity
 
     private GoogleApiClient mGoogleApiClient;
     TextView txtLocCoarse;
-    Button btnTakePicture;
-  //  Button btnContacts;
-    ImageView displayPicture;
     Location mCurrentLocation;
 
-    ArrayList<String> StoreContacts;
-    ArrayAdapter<String> arrayAdapter;
-    CursorAdapter cursorAdapter;
 
-    // Audio vars
-    private static final String LOG_TAG = "AudioRecordTest";
-    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private static String mFileName = null;
-    private MediaRecorder mRecorder = null;
-    private PlayButton mPlayButton = null;
-    private MediaPlayer mPlayer = null;
 
     // Requesting permission to RECORD_AUDIO
     private boolean permissionAccepted = false;
@@ -123,72 +79,6 @@ public class DisplayInformation extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
             .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-
-        // Audio Recording
-        // Record to the external cache directory for visibility
-        mFileName = getExternalCacheDir().getAbsolutePath();
-        mFileName += "/audiorecordtest.3gp";
-
-        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
-
-        // Attempt to record x seconds of audio
-        try {
-            onRecord(true);
-            // CountDownTimer( time in milliseconds, countdown interval )
-            CountDownTimer countDowntimer = new CountDownTimer(5000, 1000) {
-                public void onTick(long millisUntilFinished) {
-                }
-
-                public void onFinish() {
-                    onRecord(false);
-                    // Create a player to play the recently recorded audio.
-                }};countDowntimer.start();
-        } catch (SecurityException e) {
-            // ERROR
-        }
-
-        /**
-            The following has to do with the camera
-         */
-
-        // create directory named igniteCSPics to store pics taken by camera using this application
-        final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                + "/igniteCSPics/";
-        File newdir = new File(dir);
-        newdir.mkdirs();
-
-//        // create button
-//        btnTakePicture = (Button) findViewById(R.id.btnTakePicture);
-//        btnTakePicture.setOnClickListener(new View.OnClickListener()
-//        {
-//            public void onClick(View v)
-//            {
-//                // counter will be incremented each time to save the pics taken by the camera as
-//                // 1.jpg, 2.jpg, etc.
-//                count++;
-//                String file = dir + count + ".jpg";
-//                File newFile = new File(file);
-//
-//                // create new file in directory igniteCSPics
-//                try{
-//                    newFile.createNewFile();
-//                }
-//                catch(IOException e)
-//                {
-//                }
-//
-//                Uri outputFileUri = Uri.fromFile(newFile);
-//
-//                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-//
-//                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
-//            }
-//        });
-
-        // enable to automatically click button when displayinformation is called
-       // btnTakePicture.callOnClick();
 
     } // end onCreate
 
@@ -228,25 +118,6 @@ public class DisplayInformation extends AppCompatActivity
 
     }
 
-    protected void onStart() {
-        mGoogleApiClient.connect();
-        super.onStart();
-    }
-
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-
-        if (mRecorder != null) {
-            mRecorder.release();
-            mRecorder = null;
-        }
-
-        if (mPlayer != null) {
-            mPlayer.release();
-            mPlayer = null;
-        }
-    }
 
     /**
      * Manipulates the map when it's available.
@@ -284,131 +155,21 @@ public class DisplayInformation extends AppCompatActivity
         {
             Log.d("DisplayInformation", "Pic Saved");
         }
-
     }
-
-    // -----------------------
-    // Audio recording
-    // -----------------------
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode){
-            case REQUEST_RECORD_AUDIO_PERMISSION:
-                permissionAccepted = (grantResults[0] == PackageManager.PERMISSION_GRANTED);
-                break;
             case REQUEST_CONTACTS_PERMISSION:
                 permissionAccepted = (grantResults[1] == PackageManager.PERMISSION_GRANTED);
                 Toast.makeText(DisplayInformation.this,"Permission Granted, Now your application can access CONTACTS.", Toast.LENGTH_LONG).show();
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//                    Toast.makeText(DisplayInformation.this,"Permission Granted, Now your application can access CONTACTS.", Toast.LENGTH_LONG).show();
-//
-//                } else {
-//
-//                    Toast.makeText(DisplayInformation.this,"Permission Canceled, Now your application cannot access CONTACTS.", Toast.LENGTH_LONG).show();
-//
-//                }
                 break;
         }
         if (!permissionAccepted ) finish();
     }
 
-    private void onRecord(boolean start){
-        if (start) {
-            startRecording();
-        } else {
-            stopRecording();
-        }
-    }
 
-    private void onPlay(boolean start) {
-        if (start) {
-            startPlaying();
-        } else {
-            stopPlaying();
-        }
-    }
-
-    private void startPlaying() {
-        mPlayer = new MediaPlayer();
-        try {
-            mPlayer.setDataSource(mFileName);
-            mPlayer.prepare();
-            mPlayer.start();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "prepare() failed");
-        }
-    }
-
-    private void stopPlaying() {
-        mPlayer.release();
-        mPlayer = null;
-    }
-
-    private void startRecording() {
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setOutputFile(mFileName);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
-        try {
-            mRecorder.prepare();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "prepare() failed");
-        }
-
-        mRecorder.start();
-    }
-
-    private void stopRecording() {
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
-    }
-
-    class PlayButton extends Button
-    {
-        boolean mStartPlaying = true;
-
-        OnClickListener clicker = new OnClickListener()
-        {
-            public void onClick(View v) {
-                onPlay(mStartPlaying);
-                if (mStartPlaying) {
-                    setText("Stop playing");
-                } else {
-                    setText("Start playing");
-                }
-                mStartPlaying = !mStartPlaying;
-            }
-        };
-
-        public PlayButton(Context ctx) {
-            super(ctx);
-            setText("Start playing");
-            setOnClickListener(clicker);
-        }
-    }
-
-
-    public void EnableRuntimePermission() {
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
-                DisplayInformation.this,
-                Manifest.permission.READ_CONTACTS)) {
-
-            Toast.makeText(DisplayInformation.this, "CONTACTS permission allows us to Access CONTACTS app", Toast.LENGTH_LONG).show();
-
-        } else {
-
-            ActivityCompat.requestPermissions(DisplayInformation.this, new String[]{
-                    Manifest.permission.READ_CONTACTS}, REQUEST_CONTACTS_PERMISSION);
-
-        }
-    }
 
     @Override
     public void onFragmentInteraction(Uri uri)

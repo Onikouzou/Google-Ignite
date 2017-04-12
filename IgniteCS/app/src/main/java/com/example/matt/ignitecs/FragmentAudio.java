@@ -1,30 +1,23 @@
 package com.example.matt.ignitecs;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.provider.ContactsContract;
-import android.widget.Toast;
-import java.util.ArrayList;
-import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link FragmentContacts.OnFragmentInteractionListener} interface
+ * {@link FragmentAudio.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link FragmentContacts#newInstance} factory method to
+ * Use the {@link FragmentAudio#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentContacts extends Fragment
-{
+public class FragmentAudio extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -34,15 +27,9 @@ public class FragmentContacts extends Fragment
     private String mParam1;
     private String mParam2;
 
-    // variables for the contacts
-    private List<String> contacts = new ArrayList<String>();
-    ListView contactsList;
-    Cursor cursor;
-    private String name;
-
     private OnFragmentInteractionListener mListener;
 
-    public FragmentContacts() {
+    public FragmentAudio() {
         // Required empty public constructor
     }
 
@@ -52,11 +39,11 @@ public class FragmentContacts extends Fragment
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentContacts.
+     * @return A new instance of fragment FragmentAudio.
      */
     // TODO: Rename and change types and number of parameters
-    public static FragmentContacts newInstance(String param1, String param2) {
-        FragmentContacts fragment = new FragmentContacts();
+    public static FragmentAudio newInstance(String param1, String param2) {
+        FragmentAudio fragment = new FragmentAudio();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -67,8 +54,7 @@ public class FragmentContacts extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
+        if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
@@ -78,20 +64,9 @@ public class FragmentContacts extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_contacts, container, false);
-        contactsList = (ListView) view.findViewById(R.id.contactsList);
+        View view = inflater.inflate(R.layout.fragment_audio, container, false);
 
-        cursor = getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
-        GetContactsIntoArrayList();
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-                getActivity(), android.R.layout.simple_list_item_1,
-                contacts);
-
-        contactsList.setAdapter(arrayAdapter);
-        contactsList.setTextFilterEnabled(true);
         return view;
     }
 
@@ -133,17 +108,4 @@ public class FragmentContacts extends Fragment
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-    // grabs the contacts and stores them into the arraylist
-    public void GetContactsIntoArrayList() {
-        Toast.makeText(getActivity(), "Function was hit", Toast.LENGTH_LONG).show();
-
-        while (cursor.moveToNext()) {
-            name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            contacts.add(name);
-
-        }
-
-    }
-
 }

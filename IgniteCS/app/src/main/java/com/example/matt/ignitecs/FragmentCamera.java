@@ -1,41 +1,26 @@
 package com.example.matt.ignitecs;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.SurfaceTexture;
-import android.hardware.Camera;
 import android.hardware.camera2.*;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -95,7 +80,6 @@ public class FragmentCamera extends Fragment {
         public void onOpened(CameraDevice camera)
         {
             mCameraDevice = camera;
-          //  Toast.makeText(getActivity().getApplicationContext(), "Camera Opened", Toast.LENGTH_SHORT).show();
             createCameraPreviewSession();
         }
 
@@ -165,7 +149,6 @@ public class FragmentCamera extends Fragment {
     {
         View view = inflater.inflate(R.layout.fragment_camera, container, false);
 
-        Button btnCamera = (Button) view.findViewById(R.id.btnCamera);
         mTextureView = (TextureView) view.findViewById((R.id.mTextureView));
 
         return view;
