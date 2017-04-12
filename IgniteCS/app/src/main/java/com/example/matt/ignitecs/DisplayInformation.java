@@ -63,8 +63,7 @@ public class DisplayInformation extends AppCompatActivity
          */
 
         // Create an instance of GoogleAPIClient.
-        if (mGoogleApiClient == null)
-        {
+        if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
@@ -80,7 +79,82 @@ public class DisplayInformation extends AppCompatActivity
             .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+<<<<<<< HEAD
+=======
+
+
+        // Audio Recording
+        // Record to the external cache directory for visibility
+        mFileName = getExternalCacheDir().getAbsolutePath();
+        mFileName += "/audiorecordtest.3gp";
+
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+
+        // Attempt to record x seconds of audio
+        try {
+            onRecord(true);
+            // CountDownTimer( time in milliseconds, countdown interval )
+            CountDownTimer countDowntimer = new CountDownTimer(5000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                }
+
+                public void onFinish() {
+                    onRecord(false);
+                    // Create a player to play the recently recorded audio.
+                }};countDowntimer.start();
+        } catch (SecurityException e) {
+            // ERROR
+        }
+
+        /**
+            The following has to do with the camera
+         */
+
+        // create directory named igniteCSPics to store pics taken by camera using this application
+        final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                + "/igniteCSPics/";
+        File newdir = new File(dir);
+        newdir.mkdirs();
+
+//        // create button
+//        btnTakePicture = (Button) findViewById(R.id.btnTakePicture);
+//        btnTakePicture.setOnClickListener(new View.OnClickListener()
+//        {
+//            public void onClick(View v)
+//            {
+//                // counter will be incremented each time to save the pics taken by the camera as
+//                // 1.jpg, 2.jpg, etc.
+//                count++;
+//                String file = dir + count + ".jpg";
+//                File newFile = new File(file);
+//
+//                // create new file in directory igniteCSPics
+//                try{
+//                    newFile.createNewFile();
+//                }
+//                catch(IOException e)
+//                {
+//                }
+//
+//                Uri outputFileUri = Uri.fromFile(newFile);
+//
+//                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+//
+//                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+//            }
+//        });
+
+        // enable to automatically click button when displayinformation is called
+       // btnTakePicture.callOnClick();
+
+>>>>>>> origin/master
     } // end onCreate
+
+
+    // -----------------------
+    // Google Maps
+    // -----------------------
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
@@ -100,14 +174,25 @@ public class DisplayInformation extends AppCompatActivity
 
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             txtLocCoarse.setText(mCurrentLocation.getLatitude() + ", " + mCurrentLocation.getLongitude());
+
+            startLocationUpdates();
+
         } catch (SecurityException e) {
             // ERROR
         }
     }
 
-    /**
-     * The following are for google api
-     */
+    protected void startLocationUpdates() {
+        try {
+            LocationRequest mLocationRequest = new LocationRequest();
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+        } catch (SecurityException e) {
+
+        }
+
+    }
+
     @Override
     public void onConnectionSuspended(int cause) {
         //your code goes here
@@ -115,7 +200,15 @@ public class DisplayInformation extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location loc) {
+        mCurrentLocation = loc;
+//        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        updateUI();
+    }
 
+    private void updateUI() {
+        txtLocCoarse.setText(String.valueOf(mCurrentLocation.getLatitude())
+                                + ", " + String.valueOf(mCurrentLocation.getLongitude()));
+//        mLastUpdateTimeTextView.setText(mLastUpdateTime);
     }
 
 
@@ -131,14 +224,12 @@ public class DisplayInformation extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
 
-        LatLng gb = new LatLng(44.531854, -87.916980);
+        LatLng gb = new LatLng(44, -87);
 
         googleMap.addMarker(new MarkerOptions().position(gb)
                 .title("You are here"));
-        // googleMap.moveCamera(CameraUpdateFactory.newLatLng(gb));
+
         float zoomLevel = 16;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gb, zoomLevel));
     }
