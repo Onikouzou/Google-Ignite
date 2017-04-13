@@ -39,18 +39,7 @@ public class DisplayInformation extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     TextView txtLocCoarse;
     Location mCurrentLocation;
-
-
-    private static String mFileName = null;
-
-    // Requesting permission to RECORD_AUDIO
-    private boolean permissionAccepted = false;
-    private String [] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_CONTACTS};
-
-    int CAMERA_PIC_REQUEST = 1337;
-    public static final int REQUEST_CONTACTS_PERMISSION = 1 ;
-    public static int count = 0;
-    String name, phonenumber;
+    GoogleMap gMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -70,6 +59,7 @@ public class DisplayInformation extends AppCompatActivity
                     .addOnConnectionFailedListener(this)
                     .build();
         }
+        onStart();
 
         txtLocCoarse = (TextView) findViewById(R.id.txtLocCoarse);
 
@@ -79,76 +69,6 @@ public class DisplayInformation extends AppCompatActivity
             .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-<<<<<<< HEAD
-=======
-
-
-        // Audio Recording
-        // Record to the external cache directory for visibility
-        mFileName = getExternalCacheDir().getAbsolutePath();
-        mFileName += "/audiorecordtest.3gp";
-
-        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
-
-        // Attempt to record x seconds of audio
-        try {
-            onRecord(true);
-            // CountDownTimer( time in milliseconds, countdown interval )
-            CountDownTimer countDowntimer = new CountDownTimer(5000, 1000) {
-                public void onTick(long millisUntilFinished) {
-                }
-
-                public void onFinish() {
-                    onRecord(false);
-                    // Create a player to play the recently recorded audio.
-                }};countDowntimer.start();
-        } catch (SecurityException e) {
-            // ERROR
-        }
-
-        /**
-            The following has to do with the camera
-         */
-
-        // create directory named igniteCSPics to store pics taken by camera using this application
-        final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                + "/igniteCSPics/";
-        File newdir = new File(dir);
-        newdir.mkdirs();
-
-//        // create button
-//        btnTakePicture = (Button) findViewById(R.id.btnTakePicture);
-//        btnTakePicture.setOnClickListener(new View.OnClickListener()
-//        {
-//            public void onClick(View v)
-//            {
-//                // counter will be incremented each time to save the pics taken by the camera as
-//                // 1.jpg, 2.jpg, etc.
-//                count++;
-//                String file = dir + count + ".jpg";
-//                File newFile = new File(file);
-//
-//                // create new file in directory igniteCSPics
-//                try{
-//                    newFile.createNewFile();
-//                }
-//                catch(IOException e)
-//                {
-//                }
-//
-//                Uri outputFileUri = Uri.fromFile(newFile);
-//
-//                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-//
-//                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
-//            }
-//        });
-
-        // enable to automatically click button when displayinformation is called
-       // btnTakePicture.callOnClick();
-
->>>>>>> origin/master
     } // end onCreate
 
 
@@ -166,31 +86,24 @@ public class DisplayInformation extends AppCompatActivity
     }
 
     @Override
-    public void onConnected(Bundle connectionHint) {
+    public void onConnected(Bundle connectionHint)
+    {
         try {
             LocationRequest mCoarseLocationRequest = new LocationRequest();
             LocationServices.FusedLocationApi.requestLocationUpdates(
                     mGoogleApiClient, mCoarseLocationRequest, this);
 
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            txtLocCoarse.setText(mCurrentLocation.getLatitude() + ", " + mCurrentLocation.getLongitude());
 
-            startLocationUpdates();
+            if (mCurrentLocation != null)
+                txtLocCoarse.setText(mCurrentLocation.getLatitude() + ", " + mCurrentLocation.getLongitude());
+            else
+                txtLocCoarse.setText(0.0 + ", " + 0.0);
 
+            onMapReady(gMap);
         } catch (SecurityException e) {
             // ERROR
         }
-    }
-
-    protected void startLocationUpdates() {
-        try {
-            LocationRequest mLocationRequest = new LocationRequest();
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, mLocationRequest, this);
-        } catch (SecurityException e) {
-
-        }
-
     }
 
     @Override
@@ -200,17 +113,18 @@ public class DisplayInformation extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location loc) {
-        mCurrentLocation = loc;
-//        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        updateUI();
+        txtLocCoarse.setText(loc.getLatitude() + ", " + loc.getLongitude());
     }
 
-    private void updateUI() {
-        txtLocCoarse.setText(String.valueOf(mCurrentLocation.getLatitude())
-                                + ", " + String.valueOf(mCurrentLocation.getLongitude()));
-//        mLastUpdateTimeTextView.setText(mLastUpdateTime);
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
     }
 
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
 
     /**
      * Manipulates the map when it's available.
@@ -225,42 +139,19 @@ public class DisplayInformation extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        LatLng gb = new LatLng(44, -87);
-
-        googleMap.addMarker(new MarkerOptions().position(gb)
-                .title("You are here"));
-
-        float zoomLevel = 16;
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gb, zoomLevel));
-    }
-
-    /**
-     * The following methods are for the controlling the camera
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == CAMERA_PIC_REQUEST && resultCode == RESULT_OK)
-        {
-            Log.d("DisplayInformation", "Pic Saved");
+        gMap = googleMap;
+        LatLng gb;
+        // 44.5321118, -87.9132922
+        if (mCurrentLocation != null) {
+            gb = new LatLng(mCurrentLocation.getLatitude(),
+                    mCurrentLocation.getLongitude());
+            googleMap.addMarker(new MarkerOptions().position(gb)
+                    .title("You are here"));
+            float zoomLevel = 16;
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gb, zoomLevel));
         }
+
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case REQUEST_CONTACTS_PERMISSION:
-                permissionAccepted = (grantResults[1] == PackageManager.PERMISSION_GRANTED);
-                Toast.makeText(DisplayInformation.this,"Permission Granted, Now your application can access CONTACTS.", Toast.LENGTH_LONG).show();
-                break;
-        }
-        if (!permissionAccepted ) finish();
-    }
-
-
 
     @Override
     public void onFragmentInteraction(Uri uri)

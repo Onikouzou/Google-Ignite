@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity
                 {
                     public void onClick(DialogInterface dialog, int id)
                     {
-                        String pass = "a";
+                        String pass = "UWGBIgniteCS2017";
                         String input = et.getText().toString();
 
                         // checks input against password
